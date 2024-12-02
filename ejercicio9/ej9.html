@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Ej 9: Cat Walk</title>
+  <link rel="stylesheet" href="../CSS/styles.css">
+</head>
+
+<body>
+  <img id="myCat" style="position: absolute; left: 0px" src="http://www.anniemation.com/clip_art/images/cat-walk.gif" />
+  <script>
+    // Store a reference to the cat image
+    var cat = document.getElementById('myCat');
+    // Variable to keep track of direction: 1 for right, -1 for left
+    var direction = 1;
+
+    function catWalk() {
+      // Get the current left position
+      var left = parseInt(cat.style.left);
+      // Move the cat 10 pixels in the current direction
+      left += 10 * direction;
+      cat.style.left = left + 'px';
+
+      // If the cat reaches the right edge, change direction to left
+      if (left > (window.innerWidth - cat.width)) {
+        direction = -1;
+      }
+      // If the cat reaches the left edge, change direction to right
+      if (left < 0) {
+        direction = 1;
+      }
+
+      // Flip the cat image based on the direction
+      if (direction == 1) {
+        cat.style.transform = 'scaleX(1)';
+      } else {
+        cat.style.transform = 'scaleX(-1)';
+      }
+    }
+
+    // Call the catWalk function every 50 milliseconds
+    setInterval(catWalk, 50);
+  </script>
+
+
+    <!-- Footer -->
+    <footer>
+      <a href="../index.html" class="btn-home">Home</a>
+  </footer>
+
+
+
+</body>
+
+</html>

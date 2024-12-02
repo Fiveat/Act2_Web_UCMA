@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Act2_UCMA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3a8a, #ffffff);
+            min-height: 100vh;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            padding-top: 50px;
+        }
+        h1 {
+            text-shadow: 2px 2px 5px #000;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        .btn-glow {
+            background: #00c6ff;
+            color: #fff;
+            border: none;
+            box-shadow: 0 0 10px rgba(0, 198, 255, 0.5);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        .btn-glow:hover {
+            box-shadow: 0 0 20px rgba(0, 198, 255, 0.8);
+        }
+        footer {
+            background: #1e3a8a;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 30px;
+        }
+        footer a {
+            color: #fff;
+            margin: 0 15px;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        footer a:hover {
+            color: #00c6ff;
+        }
+        .ticker-container {
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            font-size: 1.2rem;
+            z-index: 1000;
+        }
+        .ticker {
+            display: flex;
+            overflow: hidden;
+            white-space: nowrap;
+            animation: scroll 20s linear infinite;
+        }
+        .ticker span {
+            margin-right: 50px;
+        }
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <h1 class="mb-4">¡Explora los Ejercicios!</h1>
+        
+        <div class="row" id="exercise-container">
+            <!-- Cards dinámicos insertados aquí -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>Conéctate con nosotros</p>
+        <a href="https://www.twitter.com/@CriptoFiveat" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="https://www.instagram.com/seolro0103" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.linkedin.com/in/solmo" target="_blank"><i class="fab fa-linkedin"></i></a>
+    </footer>
+
+    <!-- Ticker -->
+    <div class="ticker-container">
+        <div class="ticker" id="crypto-ticker">
+            Cargando precios de criptomonedas...
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const exercises = [
+            { id: 1, name: 'Ejercicio 1', link: 'ejercicio1/ej1.html' },
+            { id: 2, name: 'Ejercicio 2', link: 'ejercicio2/ej2.html' },
+            { id: 3, name: 'Ejercicio 3', link: 'ejercicio3/ej3.html' },
+            { id: 4, name: 'Ejercicio 4', link: 'ejercicio4/ej4.html' },
+            { id: 5, name: 'Ejercicio 5', link: 'ejercicio5/ej5.html' },
+            { id: 6, name: 'Ejercicio 6', link: 'ejercicio6/ej6.html' },
+            { id: 7, name: 'Ejercicio 7', link: 'ejercicio7/ej7.html' },
+            { id: 8, name: 'Ejercicio 8', link: 'ejercicio8/ej8.html' },
+            { id: 9, name: 'Ejercicio 9', link: 'ejercicio9/ej9.html' },
+        ];
+
+        const container = document.getElementById('exercise-container');
+        exercises.forEach(exercise => {
+            const col = document.createElement('div');
+            col.className = 'col-md-4 mb-4';
+            col.innerHTML = `
+                <div class="card p-3">
+                    <h5>${exercise.name}</h5>
+                    <a href="${exercise.link}" class="btn btn-glow mt-2">
+                        Ir al ${exercise.name} <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            `;
+            container.appendChild(col);
+        });
+
+        async function fetchCryptoPrices() {
+            const cryptoSymbols = ['bitcoin', 'ethereum', 'solana', 'ripple', 'cardano', 'stellar', 'chainlink', 'hedera-hashgraph', 'velo'];
+            const tickerElement = document.getElementById('crypto-ticker');
+            tickerElement.innerHTML = '';
+
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple,cardano,stellar,chainlink,hedera-hashgraph,velo&vs_currencies=usd');
+                const prices = await response.json();
+
+                const cryptoMap = {
+                    BTC: prices.bitcoin.usd,
+                    ETH: prices.ethereum.usd,
+                    SOL: prices.solana.usd,
+                    XRP: prices.ripple.usd,
+                    ADA: prices.cardano.usd,
+                    XLM: prices.stellar.usd,
+                    LINK: prices.chainlink.usd,
+                    HBAR: prices['hedera-hashgraph'].usd,
+                    VELO: prices.velo.usd
+                };
+
+                Object.entries(cryptoMap).forEach(([symbol, price]) => {
+                    const span = document.createElement('span');
+                    span.textContent = `${symbol}: $${price.toFixed(2)}`;
+                    tickerElement.appendChild(span);
+                });
+            } catch (error) {
+                console.error('Error fetching crypto prices:', error);
+                tickerElement.textContent = 'Error cargando precios';
+            }
+        }
+
+        setInterval(fetchCryptoPrices, 60000); // Actualizar cada minuto
+        fetchCryptoPrices(); // Llamada inicial
+    </script>
+</body>
+</html>
